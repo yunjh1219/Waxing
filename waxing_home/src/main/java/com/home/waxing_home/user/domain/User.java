@@ -1,6 +1,7 @@
 package com.home.waxing_home.user.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,10 +16,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본키의 값을 자동 생성, IDNTITY는 자동으로 증가를 위함
     @Column(name = "user_id") // DB컬럼명과 자바 변수명이 다를 때 선언
-    private Long userId;      // 이 필드를 DB 테이블의 user_id 컬럼에 매핑
+    private Long id;      // 이 필드를 DB 테이블의 user_id 컬럼에 매핑
 
     @Column(nullable = false, unique = true, length = 30) // 널값·중복 불가 , 글자수 30 제한
-    private String userName; // 아이디
+    private String userNum; // 아이디
 
     @Column(nullable = false)
     private String password; // 비밀번호
@@ -43,4 +44,17 @@ public class User {
     private Role role;
     private String refreshToken;
 
+    @Builder
+    public User(String userNum, String password, String name, String email, String phone,
+                String address, String gender, Role role, String refreshToken) {
+        this.userNum = userNum;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.gender = gender;
+        this.role = role;
+        this.refreshToken = refreshToken;
+    }
 }
