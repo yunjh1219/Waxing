@@ -1,8 +1,13 @@
 package com.home.waxing_home.user.controller;
 
 import com.home.waxing_home.global.common.SuccessResponse;
+import com.home.waxing_home.global.security.AccessToken;
+import com.home.waxing_home.global.security.RefreshToken;
+import com.home.waxing_home.global.security.Token;
 import com.home.waxing_home.user.dto.JoinRequestDto;
+import com.home.waxing_home.user.dto.LoginRequestDto;
 import com.home.waxing_home.user.service.AuthService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +24,20 @@ public class AuthController {
 
     private final AuthService authService; //생성자 주입
 
+    // 로그인
+    @PostMapping("/api/login")
+    @ResponseStatus(HttpStatus.OK)
+    public SuccessResponse<Void> signIn(@RequestBody @Valid LoginRequestDto loginDto, HttpServletResponse response) {
+        Token token = authService.login(loginDto);
+
+        setAccessToken(response, token.getAccessToken());
+        setRefreshToken(response, token.getRefreshToken());
+
+        return SuccessResponse.<Void>builder()
+                .status(200)
+                .message("로그인 성공")
+                .build();
+    }
 
     // 회원가입
     @PostMapping("/api/join/users")
@@ -33,5 +52,30 @@ public class AuthController {
                 .build();
     }
 
+    private void setAccessToken(HttpServletResponse response, AccessToken accessToken) {
+        setHeader(response, accessToken.getHeader(), accessToken.getData());
+    }
+
+    private void setRefreshToken(HttpServletResponse response, RefreshToken refreshToken) {
+        Cookie cookie = createCookie(refreshToken.getHeader(), refreshToken.getData());
+        response.addCookie(cookie);
+    }
+    private Cookie createCookie(String name, String value) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setPath("/");
+        cookie.setMaxAge(RefreshToken.EXPIRATION_PERIOD);
+        cookie.setHttpOnly(true);
+        return cookie;
+    }
+    private void removeCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("Authorization-refresh", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
+    }
+    private void setHeader(HttpServletResponse response, String header, String data) {
+        response.setHeader(header, data);
+    }
 
 }

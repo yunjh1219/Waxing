@@ -19,6 +19,7 @@ public class JoinRequestDto {
     private String userNum;
     @NotBlank(message = "비밀번호를 입력하세요")
     private String password;
+    @NotBlank(message = "2차 확인 비밀번호를 입력하세요")
     private String passwordConfirm;
     @NotBlank(message = "이름를 입력하세요")
     private String name;
@@ -35,8 +36,8 @@ public class JoinRequestDto {
     //DTO를 실제 Entity 객체로 변환
     public User toUserEntity() {
         return User.builder()
-                .userNum(this.userNum)      // DTO의 username을 User 엔티티의 userName에 매핑
-                .password(this.password)      // 암호화된 비밀번호가 들어있다고 가정
+                .userNum(this.userNum)
+                .password(this.password)
                 .name(this.name)
                 .email(this.email)
                 .phone(this.phone)
