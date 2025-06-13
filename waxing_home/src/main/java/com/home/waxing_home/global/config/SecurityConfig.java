@@ -5,7 +5,7 @@ import com.home.waxing_home.global.filter.ApiAccessDeniedHandler;
 import com.home.waxing_home.global.filter.ApiAuthenticationEntryPoint;
 import com.home.waxing_home.global.filter.JwtAuthenticationFilter;
 import com.home.waxing_home.global.security.JwtProvider;
-import com.home.waxing_home.user.service.ApiUserDetailsService;
+import com.home.waxing_home.user.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
-    private final ApiUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
     private final ApiAuthenticationEntryPoint entryPoint;
     private final ApiAccessDeniedHandler deniedHandler;
 
@@ -46,16 +46,19 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 설정
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 콘솔 등에서 사용 시 Frame 옵션 비활성화
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(ApiUrls.PERMIT_API_URLS).permitAll() // 인증 없이 허용할 URL 경로
+                        .requestMatchers(ApiUrls.PERMIT_API_URLS).permitAll() // 특정 API는 인증 없이 접근 가능
                         .anyRequest().authenticated() // 그 외 요청 인증 필요
                 )
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(entryPoint) // 인증 실패 처리
                         .accessDeniedHandler(deniedHandler) // 권한 부족 처리
-                );
+                )
+
+                        .formLogin(login -> login.disable()); // 폼 로그인 방식 비활성화
 
         // JWT 필터 추가
-        http.addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

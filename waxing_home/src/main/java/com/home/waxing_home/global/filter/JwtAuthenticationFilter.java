@@ -1,7 +1,6 @@
 package com.home.waxing_home.global.filter;
 
 import com.home.waxing_home.global.security.JwtProvider;
-import com.home.waxing_home.user.service.ApiUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
