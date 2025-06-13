@@ -40,7 +40,7 @@ public class AuthController {
     }
 
     // 회원가입
-    @PostMapping("/api/join/users")
+    @PostMapping("/api/join")
     @ResponseStatus(HttpStatus.OK)
     public SuccessResponse<Void> signUpUsers(@RequestBody @Valid JoinRequestDto requestDto, HttpServletResponse response){
 
