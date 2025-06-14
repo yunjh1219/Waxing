@@ -36,8 +36,6 @@ public class User {
     @Column(nullable = false)
     private String address;  // 주소
 
-    @Column(nullable = false)
-    private String gender;   // 성별
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -46,14 +44,14 @@ public class User {
 
     @Builder
     public User(String userNum, String password, String name, String email, String phone,
-                String address, String gender, Role role, String refreshToken) {
+                String address, Role role, String refreshToken) {
         this.userNum = userNum;
         this.password = password;
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.address = address;
-        this.gender = gender;
+
         this.role = role;
         this.refreshToken = refreshToken;
     }

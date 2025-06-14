@@ -147,8 +147,7 @@
     border-right: 1px solid silver;  /* 로그인과 회원가입 사이에 선 추가 */
 }
 
-/* 마지막 버튼에는 border-right 제거 */
-.auth-links a:last-child {
+.auth-links a.signupone {
     border-right: none;
 }
 
@@ -157,8 +156,14 @@
 }
 
 .auth-links button{
+    color: #585858;
     background: none;
     border: none;
+    padding: 0 15px;
+}
+
+.auth-links button:hover {
+    color: black;
 }
 
 

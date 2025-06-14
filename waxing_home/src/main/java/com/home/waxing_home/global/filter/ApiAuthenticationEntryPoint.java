@@ -27,7 +27,7 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		AuthenticationException authException) throws IOException, ServletException {
 		FailResponse error = FailResponse.builder()
 			.status(HttpStatus.UNAUTHORIZED.value())
-			.message("인증되지 않은 사용자 입니다.")
+			.message("해당 사용자의 계정이 존재하지 않습니다.")
 			.build();
 
 		String json = objectMapper.writeValueAsString(error);

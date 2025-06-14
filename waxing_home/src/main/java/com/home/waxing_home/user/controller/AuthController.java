@@ -27,7 +27,7 @@ public class AuthController {
     // 로그인
     @PostMapping("/api/login")
     @ResponseStatus(HttpStatus.OK)
-    public SuccessResponse<Void> signIn(@RequestBody @Valid LoginRequestDto loginDto, HttpServletResponse response) {
+    public SuccessResponse<Void> login(@RequestBody @Valid LoginRequestDto loginDto, HttpServletResponse response) {
         Token token = authService.login(loginDto);
 
         setAccessToken(response, token.getAccessToken());
@@ -42,7 +42,7 @@ public class AuthController {
     // 회원가입
     @PostMapping("/api/join")
     @ResponseStatus(HttpStatus.OK)
-    public SuccessResponse<Void> signUpUsers(@RequestBody @Valid JoinRequestDto requestDto, HttpServletResponse response){
+    public SuccessResponse<Void> join(@RequestBody @Valid JoinRequestDto requestDto, HttpServletResponse response){
 
         authService.joinUsers(requestDto);
 

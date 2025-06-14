@@ -15,22 +15,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Setter
 public class JoinRequestDto {
 
-    @NotBlank(message = "아이디를 입력하세요")
+    @NotBlank(message = "아이디를 입력해주세요")
     private String userNum;
-    @NotBlank(message = "비밀번호를 입력하세요")
+    @NotBlank(message = "비밀번호를 입력해주세요")
     private String password;
-    @NotBlank(message = "2차 확인 비밀번호를 입력하세요")
-    private String passwordConfirm;
-    @NotBlank(message = "이름를 입력하세요")
+    @NotBlank(message = "이름를 입력해주세요")
     private String name;
-    @NotBlank(message = "이메일을 입력하세요")
+    @NotBlank(message = "이메일을 입력해주세요")
     private String email;
-    @NotBlank(message = "폰번호를 입력하세요")
+    @NotBlank(message = "폰번호를 입력해주세요")
     private String phone;
-    @NotBlank(message = "주소를 입력하세요")
+    @NotBlank(message = "주소를 입력해주세요")
     private String address;
-    @NotBlank(message = "성별을 선택하세요")
-    private String gender;
     private Role role = Role.USER; //기본 ROLE 유저로 설정
 
     //DTO를 실제 Entity 객체로 변환
@@ -42,7 +38,6 @@ public class JoinRequestDto {
                 .email(this.email)
                 .phone(this.phone)
                 .address(this.address)
-                .gender(this.gender)
                 .role(this.role)
                 .build();
     }
