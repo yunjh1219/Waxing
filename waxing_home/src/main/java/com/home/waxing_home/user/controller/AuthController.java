@@ -69,6 +69,7 @@ public class AuthController {
 
     // 비밀번호 찾기
 
+
     private void setAccessToken(HttpServletResponse response, AccessToken accessToken) {
         setHeader(response, accessToken.getHeader(), accessToken.getData());
     }

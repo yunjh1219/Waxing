@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 콘솔 등에서 사용 시 Frame 옵션 비활성화
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(ApiUrls.PERMIT_API_URLS).permitAll() // 특정 API는 인증 없이 접근 가능
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated() // 그 외 요청 인증 필요
                 )
                 .exceptionHandling(exceptions -> exceptions

@@ -23,16 +23,16 @@ function toggleMenu(button) {
     }
 }
 
-// 로그인 상태 유무에 따른 login/회원가입/로그아웃 보여주기
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('jwtToken');
 
     const loginLink = document.getElementById('loginLink');
     const joinLink = document.getElementById('joinLink');
     const logoutBtn = document.getElementById('logoutBtn');
+    const adminMenu = document.getElementById('adminMenu');
 
     if (token) {
-        // 로그인 상태
+        // 로그인 상태 처리
         loginLink.style.display = 'none';
         joinLink.style.display = 'none';
         logoutBtn.style.display = 'inline-block';
@@ -40,12 +40,26 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('jwtToken');
             alert('로그아웃 되었습니다.');
-            window.location.reload(); // 새로고침으로 상태 반영
+            window.location.reload();
         });
+
+        // 관리자 메뉴 표시 여부 확인
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.role === 'ADMIN' && adminMenu) {
+                adminMenu.style.display = 'block';
+            }
+        } catch (e) {
+            console.error('토큰 파싱 실패:', e);
+        }
     } else {
-        // 로그아웃 상태
+        // 로그아웃 상태 처리
         loginLink.style.display = 'inline-block';
         joinLink.style.display = 'inline-block';
         logoutBtn.style.display = 'none';
+
+        if (adminMenu) {
+            adminMenu.style.display = 'none';
+        }
     }
 });
