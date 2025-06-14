@@ -7,6 +7,23 @@ form {
     padding: 30px;
 }
 
+/* 아이디/비밀번호 찾기, 회원가입 */
+.link-group {
+    padding-top:10px;
+    display: flex;         /* 가로 정렬 */
+    gap: 10px;             /* 링크 사이 간격 */
+    justify-content: center;
+}
+
+.link-group a {
+    text-decoration: none;
+    color: #585858;
+}
+
+.link-group a:hover{
+    color: black;
+}
+
 /* 각 입력 필드 스타일 */
 .form-group {
     width: 600px;

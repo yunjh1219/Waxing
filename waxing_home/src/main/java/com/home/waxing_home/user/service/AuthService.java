@@ -2,9 +2,12 @@ package com.home.waxing_home.user.service;
 
 import com.home.waxing_home.global.error.exception.DuplicateUserNumException;
 import com.home.waxing_home.global.error.exception.InvalidSigningInformation;
+import com.home.waxing_home.global.error.exception.UserNotFoundException;
 import com.home.waxing_home.global.security.JwtProvider;
 import com.home.waxing_home.global.security.Token;
 import com.home.waxing_home.user.domain.User;
+import com.home.waxing_home.user.dto.FindUserNumRequestDto;
+import com.home.waxing_home.user.dto.FindUserNumResponseDto;
 import com.home.waxing_home.user.dto.JoinRequestDto;
 import com.home.waxing_home.user.dto.LoginRequestDto;
 import com.home.waxing_home.user.repository.UserRepository;
@@ -61,4 +64,19 @@ public class AuthService {
 
         return token;
     }
+
+    //아이디 찾기
+    @Transactional
+    public FindUserNumResponseDto findUserNum(FindUserNumRequestDto findUserNumRequestDto){
+        String name = findUserNumRequestDto.getName();
+        String email = findUserNumRequestDto.getEmail();
+
+        User user = userRepository.findByNameAndEmail(name, email)
+                  .orElseThrow(UserNotFoundException::new);
+
+        return FindUserNumResponseDto.builder()
+                .userNum(user.getUserNum())
+                .build();
+    }
+
 }

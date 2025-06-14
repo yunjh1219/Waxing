@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
             };
 
             try {
-                const response = await fetch('/api/join', {
+                const response = await fetch('/api/auth/join', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

@@ -4,6 +4,7 @@ import com.home.waxing_home.global.common.SuccessResponse;
 import com.home.waxing_home.global.security.AccessToken;
 import com.home.waxing_home.global.security.RefreshToken;
 import com.home.waxing_home.global.security.Token;
+import com.home.waxing_home.user.dto.FindUserNumRequestDto;
 import com.home.waxing_home.user.dto.JoinRequestDto;
 import com.home.waxing_home.user.dto.LoginRequestDto;
 import com.home.waxing_home.user.service.AuthService;
@@ -25,7 +26,7 @@ public class AuthController {
     private final AuthService authService; //생성자 주입
 
     // 로그인
-    @PostMapping("/api/login")
+    @PostMapping("/api/auth/login")
     @ResponseStatus(HttpStatus.OK)
     public SuccessResponse<Void> login(@RequestBody @Valid LoginRequestDto loginDto, HttpServletResponse response) {
         Token token = authService.login(loginDto);
@@ -40,7 +41,7 @@ public class AuthController {
     }
 
     // 회원가입
-    @PostMapping("/api/join")
+    @PostMapping("/api/auth/join")
     @ResponseStatus(HttpStatus.OK)
     public SuccessResponse<Void> join(@RequestBody @Valid JoinRequestDto requestDto, HttpServletResponse response){
 
@@ -51,6 +52,22 @@ public class AuthController {
                 .message("회원 등록 성공")
                 .build();
     }
+
+    // 아이디 찾기
+    @PostMapping("/api/auth/find-id")
+    @ResponseStatus(HttpStatus.OK)
+    public SuccessResponse<Void> findId(@RequestBody @Valid FindUserNumRequestDto requestDto, HttpServletResponse response){
+
+        authService.findUserNum(requestDto);
+
+        return SuccessResponse.<Void>builder()
+                .status(200)
+                .message("아이디 찾기 성공")
+                .build();
+    }
+
+
+    // 비밀번호 찾기
 
     private void setAccessToken(HttpServletResponse response, AccessToken accessToken) {
         setHeader(response, accessToken.getHeader(), accessToken.getData());
