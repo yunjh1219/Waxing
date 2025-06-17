@@ -4,7 +4,8 @@ public class ApiUrls {
 	public static final String[] PERMIT_API_URLS = {
 			"/",
 			"/api/auth/**",
-			"/css/**", "/js/**",
-			"/view/**"
+			"/css/**", "/js/**", "/img/**", "/uploads",
+			"/view/**",
+			"/favicon.ico",
 	};
 }

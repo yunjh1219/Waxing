@@ -25,15 +25,15 @@ document.getElementById('loginBtn').addEventListener('click',
             return;
         }
 
-        // 여기서 헤더에서 토큰 추출
-        const token = response.headers.get('Authorization'); // "Bearer <token>"
-
-        if (token) {
-            localStorage.setItem('jwtToken', token.replace('Bearer ', ''));
-        } else {
-            alert('인증이 되지 않았습니다.');
-            return;
-        }
+        // // 여기서 헤더에서 토큰 추출
+        // const token = response.headers.get('Authorization'); // "Bearer <token>"
+        //
+        // if (token) {
+        //     localStorage.setItem('jwtToken', token.replace('Bearer ', ''));
+        // } else {
+        //     alert('인증이 되지 않았습니다.');
+        //     return;
+        // }
 
         const data = await response.json();
 

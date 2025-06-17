@@ -57,9 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loginLink.style.display = 'inline-block';
         joinLink.style.display = 'inline-block';
         logoutBtn.style.display = 'none';
+        adminMenu.style.display = 'none';
 
-        if (adminMenu) {
-            adminMenu.style.display = 'none';
-        }
     }
 });

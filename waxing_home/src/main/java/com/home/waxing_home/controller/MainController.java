@@ -30,4 +30,12 @@ public class MainController {
     public String join2(){
         return "pages/auth/joinTwo";
     }
+
+
+
+
+    @GetMapping("/view/commu/event/list")
+    public String eventList(){
+        return "pages/community/event";
+    }
 }

@@ -40,7 +40,6 @@ class AuthServiceTest {
         dto.setEmail("test@example.com");
         dto.setPhone("01012345678");
         dto.setAddress("서울시 강남구");
-        dto.setGender("남성");
 
         when(userRepository.existsByUserNum("testuser")).thenReturn(false);
         when(passwordEncoder.encode("1234")).thenReturn("암호화된비밀번호");
