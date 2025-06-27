@@ -5,6 +5,7 @@ import com.home.waxing_home.global.filter.CustomUserDetails;
 import com.home.waxing_home.user.domain.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,10 +43,10 @@ public class JwtProvider {
         this.refreshHeader = refreshHeader;
     }
 
-    public Token createToken(String userNum, Role role){
+    public Token createToken(String userName, Role role) {
         AccessToken accessToken = AccessToken.builder()
                 .header(accessHeader)
-                .data(createAccessToken(userNum, role))
+                .data(createAccessToken(userName, role))
                 .build();
         RefreshToken refreshToken = RefreshToken.builder()
                 .header(refreshHeader)
@@ -58,7 +59,8 @@ public class JwtProvider {
                 .build();
     }
 
-    //전달받은 JWT 토큰이 유효한지 검증하는 메서드입니다.
+    // 3.isTokenValid 메서드
+    // 이 메서드는 주어진 JWT가 유효한지 확인 유효-true / 비유효-false
     public boolean isTokenValid(String token) {
         try {
             Jwts.parserBuilder()
@@ -72,45 +74,48 @@ public class JwtProvider {
         }
     }
 
-    //JWT 토큰에서 사용자 정보를 꺼내서 Spring Security의 Authentication 객체로 바꾸는 메서드.
-    // Spring Security는 Authentication 객체를 통해 로그인된 사용자인지 판단합니다.
-    // 그래서 토큰 기반 인증을 하려면 토큰 → 사용자 정보 → Authentication 객체로 변환해야 합니다.
+    // 4.getAuthentication 메서드
+    // 이 메서드는 JWT에서 사용자 정보를 추출하고, 해당 정보를 사용하여 Authentication 객체를 생성
+    // CustomUserDetails.of(extractToken(token))는 JWT의 claims를 사용하여 사용자 정보를 반환하고, 이를 바탕으로 Authentication 객체를 생성
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = CustomUserDetails.of(extractToken(token));
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
-    //토큰 정보 추출
+
+    // 5. extractToken 메서드
+    // 주어진 JWT에서 **클레임(Claims)**을 추출하는 메서드입니다.
     public Claims extractToken(String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build()
-                    .parseClaimsJws(token)  //	JWT를 파싱하고 유효한지 검증
-                    .getBody();             //	토큰의 Payload(내용물)를 Claims 객체로 꺼냄
+                    .parseClaimsJws(token)
+                    .getBody();
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException("Token parsing failed", e);
         }
     }
 
-    private String createAccessToken(String userNum, Role role) {
+    private String createAccessToken(String userNum, Role role) { //Type type
         return Jwts.builder()
-                .setClaims(Map.of("role", role)) //playload에 커스텀 데이터 넣음
-                .setSubject(userNum) // 토큰의 주인 명시
-                .setExpiration(expireTime(accessTokenExpirationPeriod)) //토큰 만료시간 설정
-                .signWith(secretKey) // 위 설정을 secretkey로 서명해서 변조 되지 않게 보장
+                .setHeaderParam("typ", "JWT")
+                .setClaims(Map.of("role", role))
+                .setSubject(userNum)
+                .setExpiration(expireTime(accessTokenExpirationPeriod))
+                .signWith(secretKey, SignatureAlgorithm.HS512)  // 여기 HS512로 변경
                 .compact();
     }
 
     private String createRefreshToken() {
         return Jwts.builder()
+                .setHeaderParam("typ", "JWT")
                 .setExpiration(expireTime(refreshTokenExpirationPeriod))
-                .signWith(secretKey)
+                .signWith(secretKey, SignatureAlgorithm.HS512)  // 여기 HS512로 변경
                 .compact();
     }
 
-    //"지금 시간 + 토큰 유효 시간"을 계산해서 언제 만료될지를 정해주는 함수
     private Date expireTime(Long expirationPeriod) {
         return new Date(System.currentTimeMillis() + expirationPeriod);
     }

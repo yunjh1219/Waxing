@@ -26,6 +26,20 @@ public class AuthController {
 
     private final AuthService authService; //생성자 주입
 
+    // 로그인
+    @PostMapping("/api/auth/login")
+    @ResponseStatus(HttpStatus.OK)
+    public SuccessResponse<Void> login(@RequestBody @Valid LoginRequestDto loginDto, HttpServletResponse response) {
+        Token token = authService.login(loginDto);
+
+        setAccessToken(response, token.getAccessToken());
+        setRefreshToken(response, token.getRefreshToken());
+
+        return SuccessResponse.<Void>builder()
+                .status(200)
+                .message("로그인 성공")
+                .build();
+    }
 
 
     // 회원가입
@@ -57,56 +71,24 @@ public class AuthController {
     }
 
 
-
-    // 로그인
-    @PostMapping("/api/auth/login")
-    @ResponseStatus(HttpStatus.OK)
-    public SuccessResponse<Void> login(@RequestBody @Valid LoginRequestDto loginDto, HttpServletResponse response) {
-        Token token = authService.login(loginDto);
-
-        setAccessToken(response, token.getAccessToken());
-        setRefreshToken(response, token.getRefreshToken());
-
-        return SuccessResponse.<Void>builder()
-                .status(200)
-                .message("로그인 성공")
-                .build();
-    }
-
     private void setAccessToken(HttpServletResponse response, AccessToken accessToken) {
-        Cookie cookie = createCookie(accessToken.getHeader(), accessToken.getData(), AccessToken.EXPIRATION_PERIOD);
+        Cookie cookie = createCookie(accessToken.getHeader(), accessToken.getData());
         response.addCookie(cookie);
     }
 
     private void setRefreshToken(HttpServletResponse response, RefreshToken refreshToken) {
-        Cookie cookie = createCookie(refreshToken.getHeader(), refreshToken.getData(), RefreshToken.EXPIRATION_PERIOD);
+        Cookie cookie = createCookie(refreshToken.getHeader(), refreshToken.getData());
         response.addCookie(cookie);
     }
 
-    private Cookie createCookie(String name, String value, int maxAge) {
+    private Cookie createCookie(String name, String value) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
-        cookie.setMaxAge(maxAge);
         cookie.setHttpOnly(true);
         cookie.setSecure(false); // 배포시 반드시 true 권장 (HTTPS)
         return cookie;
     }
 
-//    private void setAccessToken(HttpServletResponse response, AccessToken accessToken) {
-//        setHeader(response, accessToken.getHeader(), accessToken.getData());
-//    }
-//
-//    private void setRefreshToken(HttpServletResponse response, RefreshToken refreshToken) {
-//        Cookie cookie = createCookie(refreshToken.getHeader(), refreshToken.getData());
-//        response.addCookie(cookie);
-//    }
-//    private Cookie createCookie(String name, String value) {
-//        Cookie cookie = new Cookie(name, value);
-//        cookie.setPath("/");
-//        cookie.setMaxAge(RefreshToken.EXPIRATION_PERIOD);
-//        cookie.setHttpOnly(true);
-//        return cookie;
-//    }
 
 
     private void removeCookie(HttpServletResponse response) {

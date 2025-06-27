@@ -7,7 +7,6 @@ import lombok.Getter;
 public class RefreshToken {
     private String header;
     private String data;
-    public static final int EXPIRATION_PERIOD = 604800;
 
     @Builder
     public RefreshToken(String header, String data) {
